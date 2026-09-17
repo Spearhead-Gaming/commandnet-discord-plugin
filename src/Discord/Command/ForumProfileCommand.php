@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Forumify\Discord\Discord\Command;
+namespace MajesticDev\Discord\Discord\Command;
 
 use Forumify\Core\Entity\User;
 use Forumify\Core\Repository\UserRepository;
 use Forumify\Core\Twig\Extension\CoreRuntime;
-use Forumify\Discord\Api\DTO\DiscordCommandResult;
-use Forumify\Discord\Api\DTO\DiscordCommandOption;
-use Forumify\Discord\Api\DTO\DiscordEmbed;
-use Forumify\Discord\Api\Resource\DiscordCommandRun;
-use Forumify\Discord\Discord\DiscordCommandInterface;
-use Forumify\Discord\Service\BadgeImageComposer;
+use MajesticDev\Discord\Api\DTO\DiscordCommandResult;
+use MajesticDev\Discord\Api\DTO\DiscordCommandOption;
+use MajesticDev\Discord\Api\DTO\DiscordEmbed;
+use MajesticDev\Discord\Api\Resource\DiscordCommandRun;
+use MajesticDev\Discord\Discord\DiscordCommandInterface;
+use MajesticDev\Discord\Service\BadgeImageComposer;
 use Forumify\Forum\Repository\CommentRepository;
 use Forumify\Forum\Repository\SubscriptionRepository;
 use Forumify\Forum\Repository\TopicRepository;

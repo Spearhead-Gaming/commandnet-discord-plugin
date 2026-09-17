@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Forumify\Discord\Repository;
+namespace MajesticDev\Discord\Repository;
 
 use Forumify\Core\Repository\AbstractRepository;
-use Forumify\Discord\Entity\DiscordConnection;
+use MajesticDev\Discord\Entity\DiscordConnection;
 
 /**
  * @extends AbstractRepository<DiscordConnection>

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Forumify\Discord\EventSubscriber;
+namespace MajesticDev\Discord\EventSubscriber;
 
 use DateInterval;
 use Forumify\Core\Entity\User;
 use Forumify\Core\Repository\SettingRepository;
-use Forumify\Discord\Exception\DiscordBotException;
-use Forumify\Discord\Service\BotService;
+use MajesticDev\Discord\Exception\DiscordBotException;
+use MajesticDev\Discord\Service\BotService;
 use Forumify\OAuth\Entity\IdentityProvider;
 use Forumify\OAuth\Entity\IdentityProviderUser;
 use Forumify\OAuth\Idp\DiscordIdp;

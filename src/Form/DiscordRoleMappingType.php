@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Forumify\Discord\Form;
+namespace MajesticDev\Discord\Form;
 
 use Forumify\Core\Entity\Role;
-use Forumify\Discord\Entity\DiscordRoleMapping;
+use MajesticDev\Discord\Entity\DiscordRoleMapping;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;

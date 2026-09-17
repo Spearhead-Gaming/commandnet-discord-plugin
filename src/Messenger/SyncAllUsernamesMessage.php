@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Forumify\Discord\Messenger;
+namespace MajesticDev\Discord\Messenger;
 
 use Forumify\Core\Messenger\AsyncMessageInterface;
 

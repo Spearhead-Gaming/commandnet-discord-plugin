@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Forumify\Discord\Exception;
+namespace MajesticDev\Discord\Exception;
 
 use Exception;
 

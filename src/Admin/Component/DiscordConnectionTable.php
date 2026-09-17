@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Forumify\Discord\Admin\Component;
+namespace MajesticDev\Discord\Admin\Component;
 
 use Forumify\Core\Component\Table\AbstractDoctrineTable;
-use Forumify\Discord\Entity\DiscordConnection;
+use MajesticDev\Discord\Entity\DiscordConnection;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 
-#[AsLiveComponent('Forumify\\DiscordConnectionTable', '@Forumify/components/table/table.html.twig')]
+#[AsLiveComponent('MajesticDev\\DiscordConnectionTable', '@Forumify/components/table/table.html.twig')]
 #[IsGranted('discord.admin.connections.view')]
 class DiscordConnectionTable extends AbstractDoctrineTable
 {

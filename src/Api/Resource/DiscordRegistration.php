@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Forumify\Discord\Api\Resource;
+namespace MajesticDev\Discord\Api\Resource;
 
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Post;
-use Forumify\Discord\Api\Processor\RegistrationProcessor;
+use MajesticDev\Discord\Api\Processor\RegistrationProcessor;
 use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ApiResource(

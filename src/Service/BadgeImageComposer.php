@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Forumify\Discord\Service;
+namespace MajesticDev\Discord\Service;
 
 use Forumify\Forum\Entity\Badge;
 use League\Flysystem\FilesystemOperator;

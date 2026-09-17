@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Forumify\Discord\Service;
+namespace MajesticDev\Discord\Service;
 
 use League\Flysystem\FilesystemOperator;
 

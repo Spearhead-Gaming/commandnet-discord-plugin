@@ -15,7 +15,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Forumify\\Discord\\": "src/"
+            "MajesticDev\\Discord\\": "src/"
         }
     },
     "config": {
@@ -26,7 +26,7 @@
         }
     },
     "extra": {
-        "forumify-plugin-class": "Forumify\\Discord\\ForumifyDiscordPlugin",
+        "forumify-plugin-class": "MajesticDev\\Discord\\CommandNetDiscordPlugin",
         "branch-alias": {
             "dev-master": "1.1.x-dev"
         }

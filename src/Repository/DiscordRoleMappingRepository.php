@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Forumify\Discord\Repository;
+namespace MajesticDev\Discord\Repository;
 
 use Forumify\Core\Repository\AbstractRepository;
-use Forumify\Discord\Entity\DiscordRoleMapping;
+use MajesticDev\Discord\Entity\DiscordRoleMapping;
 
 /**
  * @extends AbstractRepository<DiscordRoleMapping>

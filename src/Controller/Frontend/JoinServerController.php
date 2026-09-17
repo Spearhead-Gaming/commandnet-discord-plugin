@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Forumify\Discord\Controller\Frontend;
+namespace MajesticDev\Discord\Controller\Frontend;
 
-use Forumify\Discord\Repository\DiscordConnectionRepository;
+use MajesticDev\Discord\Repository\DiscordConnectionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -32,7 +32,7 @@ class JoinServerController extends AbstractController
             $inviteLink = "https://discord.gg/$inviteLink";
         }
 
-        return $this->render('@ForumifyDiscordPlugin/frontend/join.html.twig', [
+        return $this->render('@CommandNetDiscordPlugin/frontend/join.html.twig', [
             'inviteLink' => $inviteLink,
         ]);
     }

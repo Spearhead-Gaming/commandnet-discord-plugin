@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Forumify\Discord\Controller\Admin;
+namespace MajesticDev\Discord\Controller\Admin;
 
 use Forumify\Admin\Crud\AbstractCrudController;
-use Forumify\Discord\Entity\DiscordConnection;
-use Forumify\Discord\Form\DiscordConnectionType;
+use MajesticDev\Discord\Entity\DiscordConnection;
+use MajesticDev\Discord\Form\DiscordConnectionType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -28,7 +28,7 @@ class DiscordConnectionController extends AbstractCrudController
 
     protected function getTableName(): string
     {
-        return 'Forumify\\DiscordConnectionTable';
+        return 'MajesticDev\\DiscordConnectionTable';
     }
 
     protected function getForm(?object $data): FormInterface

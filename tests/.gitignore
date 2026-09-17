@@ -5,3 +5,7 @@
 ###< phpunit/phpunit ###
 
 config/reference.php
+
+###> liip/imagine-bundle ###
+/public/media/cache/
+###< liip/imagine-bundle ###

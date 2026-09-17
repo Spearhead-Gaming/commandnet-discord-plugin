@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Forumify\Discord\Api\DTO;
+namespace MajesticDev\Discord\Api\DTO;
 
 use Symfony\Component\Serializer\Attribute\Groups;
 

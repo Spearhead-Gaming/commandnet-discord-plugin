@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Forumify\Discord\Controller\Frontend;
+namespace MajesticDev\Discord\Controller\Frontend;
 
 use Forumify\Core\Entity\User;
 use Forumify\OAuth\Idp\DiscordIdp;
@@ -43,7 +43,7 @@ class ConnectAccountController extends AbstractController
             }
         }
 
-        return $this->render('@ForumifyDiscordPlugin/frontend/connect.html.twig', [
+        return $this->render('@CommandNetDiscordPlugin/frontend/connect.html.twig', [
             'discordIdp' => $discordIdp,
         ]);
     }

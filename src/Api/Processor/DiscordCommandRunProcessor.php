@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Forumify\Discord\Api\Processor;
+namespace MajesticDev\Discord\Api\Processor;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use Forumify\Core\Repository\SettingRepository;
-use Forumify\Discord\Api\DTO\DiscordCommandResult;
-use Forumify\Discord\Api\DTO\DiscordEmbed;
-use Forumify\Discord\Api\Resource\DiscordCommandRun;
-use Forumify\Discord\Discord\DiscordCommandInterface;
+use MajesticDev\Discord\Api\DTO\DiscordCommandResult;
+use MajesticDev\Discord\Api\DTO\DiscordEmbed;
+use MajesticDev\Discord\Api\Resource\DiscordCommandRun;
+use MajesticDev\Discord\Discord\DiscordCommandInterface;
 use Symfony\Component\Asset\Packages;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\HttpFoundation\UrlHelper;

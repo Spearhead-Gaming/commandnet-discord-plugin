@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Forumify\Discord\Form;
+namespace MajesticDev\Discord\Form;
 
 use Forumify\Calendar\Entity\Calendar;
 use Forumify\Calendar\Repository\CalendarRepository;

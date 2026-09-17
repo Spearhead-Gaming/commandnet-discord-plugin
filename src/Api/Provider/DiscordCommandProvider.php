@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Forumify\Discord\Api\Provider;
+namespace MajesticDev\Discord\Api\Provider;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
-use Forumify\Discord\Api\Resource\DiscordCommand;
-use Forumify\Discord\Discord\DiscordCommandInterface;
+use MajesticDev\Discord\Api\Resource\DiscordCommand;
+use MajesticDev\Discord\Discord\DiscordCommandInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 /**

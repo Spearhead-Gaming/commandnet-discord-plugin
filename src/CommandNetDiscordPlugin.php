@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Forumify\Discord;
+namespace MajesticDev\Discord;
 
 use Forumify\Plugin\AbstractForumifyPlugin;
 use Forumify\Plugin\PluginMetadata;
 
-class ForumifyDiscordPlugin extends AbstractForumifyPlugin
+class CommandNetDiscordPlugin extends AbstractForumifyPlugin
 {
     public function getPluginMetadata(): PluginMetadata
     {
         return new PluginMetadata(
             'Discord',
-            'forumify',
+            'MajesticDev',
             'Multi-guild Discord bridge: syncs roles, usernames, slash commands and notifications to one connection per Discord server.',
-            'https://forumify.net',
+            'https://example.com', // TODO: replace with real domain once purchased
             settingsRoute: 'discord_admin_settings',
         );
     }

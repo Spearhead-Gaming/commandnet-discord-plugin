@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Forumify\Discord\EventSubscriber;
+namespace MajesticDev\Discord\EventSubscriber;
 
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\ORM\Events;
 use Forumify\Calendar\Entity\Calendar;
 use Forumify\Calendar\Entity\CalendarEvent;
 use Forumify\Core\Repository\SettingRepository;
-use Forumify\Discord\Service\BotService;
+use MajesticDev\Discord\Service\BotService;
 
 /**
  * Cross-posts a new CalendarEvent to every connection's announcements channel, if its

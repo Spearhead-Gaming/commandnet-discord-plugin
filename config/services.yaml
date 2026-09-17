@@ -3,7 +3,7 @@ services:
         autowire: true
         autoconfigure: true
 
-    Forumify\Discord\:
+    MajesticDev\Discord\:
         resource: '../src/'
         exclude:
             - '../src/**/DataFixture/'

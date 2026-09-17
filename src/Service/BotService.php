@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Forumify\Discord\Service;
+namespace MajesticDev\Discord\Service;
 
 use Forumify\Core\Entity\Role;
 use Forumify\Core\Entity\User;
 use Forumify\Core\Repository\SettingRepository;
-use Forumify\Discord\Api\Resource\PostMessage;
-use Forumify\Discord\Api\Resource\RolesChanged;
-use Forumify\Discord\Api\Resource\UsernameChanged;
-use Forumify\Discord\Entity\DiscordConnection;
-use Forumify\Discord\Entity\DiscordRoleMapping;
-use Forumify\Discord\Exception\DiscordBotException;
-use Forumify\Discord\Exception\NoBotRegisteredException;
-use Forumify\Discord\Repository\DiscordConnectionRepository;
+use MajesticDev\Discord\Api\Resource\PostMessage;
+use MajesticDev\Discord\Api\Resource\RolesChanged;
+use MajesticDev\Discord\Api\Resource\UsernameChanged;
+use MajesticDev\Discord\Entity\DiscordConnection;
+use MajesticDev\Discord\Entity\DiscordRoleMapping;
+use MajesticDev\Discord\Exception\DiscordBotException;
+use MajesticDev\Discord\Exception\NoBotRegisteredException;
+use MajesticDev\Discord\Repository\DiscordConnectionRepository;
 use Forumify\OAuth\Entity\OAuthClient;
 use Forumify\OAuth\Idp\DiscordIdp;
 use Forumify\OAuth\Repository\IdentityProviderUserRepository;

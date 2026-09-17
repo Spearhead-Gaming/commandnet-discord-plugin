@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Forumify\Discord\Entity;
+namespace MajesticDev\Discord\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Forumify\Core\Entity\IdentifiableEntityTrait;
 use Forumify\Core\Entity\Role;
-use Forumify\Discord\Repository\DiscordRoleMappingRepository;
+use MajesticDev\Discord\Repository\DiscordRoleMappingRepository;
 
 /**
  * "Grant/revoke this Discord role on this connection's server whenever a user gains or

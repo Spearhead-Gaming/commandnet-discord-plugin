@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Forumify\Discord\Api\Resource;
+namespace MajesticDev\Discord\Api\Resource;
 
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
-use Forumify\Discord\Api\Provider\DiscordCommandProvider;
-use Forumify\Discord\Api\DTO\DiscordCommandOption;
+use MajesticDev\Discord\Api\Provider\DiscordCommandProvider;
+use MajesticDev\Discord\Api\DTO\DiscordCommandOption;
 use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ApiResource(

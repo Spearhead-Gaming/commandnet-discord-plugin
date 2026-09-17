@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Forumify\Discord\Messenger;
+namespace MajesticDev\Discord\Messenger;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
-use Forumify\Discord\Exception\DiscordBotException;
-use Forumify\Discord\Service\BotService;
+use MajesticDev\Discord\Exception\DiscordBotException;
+use MajesticDev\Discord\Service\BotService;
 use Forumify\OAuth\Idp\DiscordIdp;
 use Forumify\OAuth\Repository\IdentityProviderUserRepository;
 use Forumify\OAuth\Entity\IdentityProviderUser;

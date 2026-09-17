@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Forumify\Discord\EventSubscriber;
+namespace MajesticDev\Discord\EventSubscriber;
 
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\EntityManagerInterface;
@@ -10,7 +10,7 @@ use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Events;
 use Forumify\Core\Entity\Role;
 use Forumify\Core\Entity\User;
-use Forumify\Discord\Service\BotService;
+use MajesticDev\Discord\Service\BotService;
 
 #[AsDoctrineListener(event: Events::onFlush)]
 #[AsDoctrineListener(event: Events::postFlush)]

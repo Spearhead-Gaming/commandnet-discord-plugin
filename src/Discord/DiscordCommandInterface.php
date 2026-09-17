@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Forumify\Discord\Discord;
+namespace MajesticDev\Discord\Discord;
 
-use Forumify\Discord\Api\DTO\DiscordCommandResult;
+use MajesticDev\Discord\Api\DTO\DiscordCommandResult;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
-use Forumify\Discord\Api\DTO\DiscordCommandOption;
-use Forumify\Discord\Api\Resource\DiscordCommandRun;
+use MajesticDev\Discord\Api\DTO\DiscordCommandOption;
+use MajesticDev\Discord\Api\Resource\DiscordCommandRun;
 
 #[AutoconfigureTag('discord.command')]
 interface DiscordCommandInterface

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Forumify\Discord\Entity;
+namespace MajesticDev\Discord\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Forumify\Core\Entity\IdentifiableEntityTrait;
 use Forumify\Core\Entity\TimestampableEntityTrait;
-use Forumify\Discord\Repository\DiscordConnectionRepository;
+use MajesticDev\Discord\Repository\DiscordConnectionRepository;
 
 /**
  * One Discord server the bot has been invited to - the community server, or a unit's

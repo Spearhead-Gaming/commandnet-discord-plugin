@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Forumify\Discord\Controller\Admin;
+namespace MajesticDev\Discord\Controller\Admin;
 
 use Forumify\Core\Repository\SettingRepository;
-use Forumify\Discord\Form\SettingsType;
-use Forumify\Discord\Messenger\SyncAllUsernamesMessage;
-use Forumify\Discord\Service\BotService;
+use MajesticDev\Discord\Form\SettingsType;
+use MajesticDev\Discord\Messenger\SyncAllUsernamesMessage;
+use MajesticDev\Discord\Service\BotService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -43,7 +43,7 @@ class SettingsController extends AbstractController
             }
         }
 
-        return $this->render('@ForumifyDiscordPlugin/admin/settings/settings.html.twig', [
+        return $this->render('@CommandNetDiscordPlugin/admin/settings/settings.html.twig', [
             'client' => $client,
             'form' => $form,
             'status' => $status,

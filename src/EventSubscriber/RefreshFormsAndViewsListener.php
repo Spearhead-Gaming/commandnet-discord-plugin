@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Forumify\Discord\EventSubscriber;
+namespace MajesticDev\Discord\EventSubscriber;
 
-use Forumify\Discord\Exception\DiscordBotException;
-use Forumify\Discord\ForumifyDiscordPlugin;
-use Forumify\Discord\Service\BotService;
+use MajesticDev\Discord\Exception\DiscordBotException;
+use MajesticDev\Discord\CommandNetDiscordPlugin;
+use MajesticDev\Discord\Service\BotService;
 use Forumify\Plugin\Event\PluginRefreshedEvent;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
@@ -22,7 +22,7 @@ class RefreshFormsAndViewsListener
 
     public function __invoke(PluginRefreshedEvent $event): void
     {
-        if ($event->plugin->getPluginClass() !== ForumifyDiscordPlugin::class) {
+        if ($event->plugin->getPluginClass() !== CommandNetDiscordPlugin::class) {
             return;
         }
 

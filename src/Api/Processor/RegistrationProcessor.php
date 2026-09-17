@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Forumify\Discord\Api\Processor;
+namespace MajesticDev\Discord\Api\Processor;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use Forumify\Core\Repository\SettingRepository;
-use Forumify\Discord\Api\Resource\DiscordRegistration;
+use MajesticDev\Discord\Api\Resource\DiscordRegistration;
 
 /**
  * @implements ProcessorInterface<DiscordRegistration, void>
