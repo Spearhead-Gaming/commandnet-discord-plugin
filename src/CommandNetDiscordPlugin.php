@@ -15,7 +15,8 @@ class CommandNetDiscordPlugin extends AbstractForumifyPlugin
             'Discord',
             'MajesticDev',
             'Multi-guild Discord bridge: syncs roles, usernames, slash commands and notifications to one connection per Discord server.',
-            'https://example.com', // TODO: replace with real domain once purchased
+            // TODO: replace with real domain once purchased
+            'https://example.com',
             settingsRoute: 'discord_admin_settings',
         );
     }
