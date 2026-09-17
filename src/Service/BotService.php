@@ -7,10 +7,14 @@ namespace Forumify\Discord\Service;
 use Forumify\Core\Entity\Role;
 use Forumify\Core\Entity\User;
 use Forumify\Core\Repository\SettingRepository;
+use Forumify\Discord\Api\Resource\PostMessage;
 use Forumify\Discord\Api\Resource\RolesChanged;
 use Forumify\Discord\Api\Resource\UsernameChanged;
+use Forumify\Discord\Entity\DiscordConnection;
+use Forumify\Discord\Entity\DiscordRoleMapping;
 use Forumify\Discord\Exception\DiscordBotException;
 use Forumify\Discord\Exception\NoBotRegisteredException;
+use Forumify\Discord\Repository\DiscordConnectionRepository;
 use Forumify\OAuth\Entity\OAuthClient;
 use Forumify\OAuth\Idp\DiscordIdp;
 use Forumify\OAuth\Repository\IdentityProviderUserRepository;
@@ -20,6 +24,13 @@ use GuzzleHttp\Exception\GuzzleException;
 use JsonException;
 use Symfony\Component\Serializer\SerializerInterface;
 
+/**
+ * One bot process backs every Discord server (see DiscordConnection). This service still
+ * talks to a single bot endpoint/token pair - what changed from upstream is that every
+ * payload now carries which guild it applies to, and the caller never has to say which:
+ * updateRoles()/updateUsername() figure that out themselves by walking every active
+ * connection's own role mappings.
+ */
 class BotService
 {
     public const string STATUS_ONLINE = 'online';
@@ -33,6 +44,7 @@ class BotService
         private readonly SerializerInterface $serializer,
         private readonly OAuthClientRepository $oAuthClientRepository,
         private readonly IdentityProviderUserRepository $idpUserRepository,
+        private readonly DiscordConnectionRepository $connectionRepository,
     ) {
     }
 
@@ -69,6 +81,14 @@ class BotService
         }
     }
 
+    /**
+     * @return array<array{id: string, name: string}>
+     */
+    public function getGuildRoles(string $guildId): array
+    {
+        return $this->fetchData('roles', ['guildId' => $guildId]);
+    }
+
     public function updateUsername(User $user): void
     {
         if (!$this->settingRepository->get('discord.force_matching_username')) {
@@ -76,12 +96,19 @@ class BotService
         }
 
         $idpUsers = $this->idpUserRepository->findByUserAndIdpType($user, DiscordIdp::getType());
-        foreach ($idpUsers as $idpUser) {
-            $usernameChangedDto = new UsernameChanged();
-            $usernameChangedDto->discordIdentifier = $idpUser->getExternalIdentifier();
-            $usernameChangedDto->discordUsername = $idpUser->getExternalUsername();
-            $usernameChangedDto->newUsername = $user->getDisplayName();
-            $this->sendData($usernameChangedDto);
+        if (empty($idpUsers)) {
+            return;
+        }
+
+        foreach ($this->connectionRepository->findActive() as $connection) {
+            foreach ($idpUsers as $idpUser) {
+                $dto = new UsernameChanged();
+                $dto->guildId = $connection->getGuildId();
+                $dto->discordIdentifier = $idpUser->getExternalIdentifier();
+                $dto->discordUsername = $idpUser->getExternalUsername();
+                $dto->newUsername = $user->getDisplayName();
+                $this->sendData($dto);
+            }
         }
     }
 
@@ -91,58 +118,90 @@ class BotService
      */
     public function updateRoles(User $user, array $added, array $removed): void
     {
-        $rolesToSync = $this->getRolesToSync();
-        if (empty($rolesToSync)) {
-            return;
-        }
-
-        $rolesChanged = new RolesChanged();
-        foreach ($added as $roleAdded) {
-            $discordSnowflakes = $rolesToSync[$roleAdded->getId()] ?? [];
-            foreach ($discordSnowflakes as $snowflake) {
-                $rolesChanged->rolesAdded[] = $snowflake;
-            }
-        }
-
-        foreach ($removed as $roleRemoved) {
-            $discordSnowflakes = $rolesToSync[$roleRemoved->getId()] ?? [];
-            foreach ($discordSnowflakes as $snowflake) {
-                $rolesChanged->rolesRemoved[] = $snowflake;
-            }
-        }
-
-        if (empty($rolesChanged->rolesAdded) && empty($rolesChanged->rolesRemoved)) {
-            return;
-        }
-
         $idpUsers = $this->idpUserRepository->findByUserAndIdpType($user, DiscordIdp::getType());
-        foreach ($idpUsers as $idpUser) {
-            $userRolesChanged = clone $rolesChanged;
-            $userRolesChanged->discordIdentifier = $idpUser->getExternalIdentifier();
-            $this->sendData($userRolesChanged);
+        if (empty($idpUsers)) {
+            return;
         }
+
+        foreach ($this->connectionRepository->findActive() as $connection) {
+            $rolesToSync = $this->getRolesToSync($connection);
+            if (empty($rolesToSync)) {
+                continue;
+            }
+
+            $rolesAdded = $this->resolveSnowflakes($added, $rolesToSync);
+            $rolesRemoved = $this->resolveSnowflakes($removed, $rolesToSync);
+            if (empty($rolesAdded) && empty($rolesRemoved)) {
+                continue;
+            }
+
+            foreach ($idpUsers as $idpUser) {
+                $dto = new RolesChanged();
+                $dto->guildId = $connection->getGuildId();
+                $dto->discordIdentifier = $idpUser->getExternalIdentifier();
+                $dto->rolesAdded = $rolesAdded;
+                $dto->rolesRemoved = $rolesRemoved;
+                $this->sendData($dto);
+            }
+        }
+    }
+
+    /**
+     * @param array<Role> $roles
+     * @param array<int, array<string>> $rolesToSync
+     * @return array<string>
+     */
+    private function resolveSnowflakes(array $roles, array $rolesToSync): array
+    {
+        $snowflakes = [];
+        foreach ($roles as $role) {
+            foreach ($rolesToSync[$role->getId()] ?? [] as $snowflake) {
+                $snowflakes[] = $snowflake;
+            }
+        }
+        return $snowflakes;
     }
 
     /**
      * @return array<int, array<string>> [forumifyRoleId => [discordRoleSnowflake]]
      */
-    private function getRolesToSync(): array
+    private function getRolesToSync(DiscordConnection $connection): array
     {
-        $rolesToSync = $this->settingRepository->get('discord.sync_roles');
-        if (empty($rolesToSync) || !is_array($rolesToSync)) {
-            return [];
-        }
-
         $roleMap = [];
-        foreach ($rolesToSync as $toSync) {
-            if (empty($toSync['discord_role']) || empty($toSync['forumify_role'])) {
+        /** @var DiscordRoleMapping $mapping */
+        foreach ($connection->getRoleMappings() as $mapping) {
+            $role = $mapping->getForumifyRole();
+            if ($role === null) {
+                continue;
+            }
+            $roleMap[$role->getId()][] = $mapping->getDiscordRoleId();
+        }
+        return $roleMap;
+    }
+
+    /**
+     * Posts to every active connection's announcements channel - the generic "tell every
+     * server something happened" primitive other plugins (calendar cross-posting today,
+     * id-card/server-manager/s3-tools later) build on instead of talking to the bot
+     * themselves. Connections without an announcements channel configured are skipped.
+     *
+     * @param array<string, mixed>|null $embed
+     */
+    public function postAnnouncement(string $content, ?array $embed = null): void
+    {
+        foreach ($this->connectionRepository->findActive() as $connection) {
+            $channelId = $connection->getAnnouncementsChannelId();
+            if ($channelId === null) {
                 continue;
             }
 
-            $roleMap[$toSync['forumify_role']][] = $toSync['discord_role'];
+            $dto = new PostMessage();
+            $dto->guildId = $connection->getGuildId();
+            $dto->channelId = $channelId;
+            $dto->content = $content;
+            $dto->embed = $embed;
+            $this->sendData($dto);
         }
-
-        return $roleMap;
     }
 
     public function healthCheck(): string

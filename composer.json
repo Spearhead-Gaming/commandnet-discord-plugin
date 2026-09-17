@@ -1,6 +1,6 @@
 {
-    "name": "forumify/forumify-discord-plugin",
-    "description": "Tightly couple your forumify instance with discord.",
+    "name": "majesticdev/commandnet-discord-plugin",
+    "description": "Multi-guild fork of forumify-discord-plugin: syncs Discord roles, usernames, slash commands and notifications across one connection per unit's Discord server instead of a single global server.",
     "type": "forumify-plugin",
     "keywords": ["symfony-ux"],
     "license": "OSL-3.0",

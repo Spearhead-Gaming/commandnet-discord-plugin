@@ -28,4 +28,12 @@ class DiscordCommandRun
 
     #[Groups('DiscordCommandRun')]
     public string $discordUserId;
+
+    /**
+     * The guild the interaction was run in. Null for DM-run commands, which discord.js
+     * itself reports as guildId: null - commands that need a unit/server context should
+     * check for that instead of assuming it's always set.
+     */
+    #[Groups('DiscordCommandRun')]
+    public ?string $guildId = null;
 }

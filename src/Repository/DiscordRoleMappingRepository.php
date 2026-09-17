@@ -1,0 +1,19 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Forumify\Discord\Repository;
+
+use Forumify\Core\Repository\AbstractRepository;
+use Forumify\Discord\Entity\DiscordRoleMapping;
+
+/**
+ * @extends AbstractRepository<DiscordRoleMapping>
+ */
+class DiscordRoleMappingRepository extends AbstractRepository
+{
+    public static function getEntityClass(): string
+    {
+        return DiscordRoleMapping::class;
+    }
+}

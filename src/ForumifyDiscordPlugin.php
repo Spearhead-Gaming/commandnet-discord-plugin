@@ -14,9 +14,18 @@ class ForumifyDiscordPlugin extends AbstractForumifyPlugin
         return new PluginMetadata(
             'Discord',
             'forumify',
-            'Tightly couple your forumify instance with discord.',
+            'Multi-guild Discord bridge: syncs roles, usernames, slash commands and notifications to one connection per Discord server.',
             'https://forumify.net',
             settingsRoute: 'discord_admin_settings',
         );
+    }
+
+    public function getPermissions(): array
+    {
+        return [
+            'admin' => [
+                'connections' => ['view', 'manage'],
+            ],
+        ];
     }
 }

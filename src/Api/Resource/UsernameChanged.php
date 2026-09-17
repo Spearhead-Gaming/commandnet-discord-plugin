@@ -15,6 +15,9 @@ class UsernameChanged
     public readonly int $id;
 
     #[Groups('UsernameChanged')]
+    public string $guildId;
+
+    #[Groups('UsernameChanged')]
     public string $discordIdentifier;
 
     #[Groups('UsernameChanged')]

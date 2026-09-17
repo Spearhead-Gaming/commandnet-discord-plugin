@@ -6,19 +6,19 @@ namespace Forumify\Discord\Form;
 
 use Forumify\Calendar\Entity\Calendar;
 use Forumify\Calendar\Repository\CalendarRepository;
-use Forumify\Core\Repository\RoleRepository;
-use Forumify\Discord\Service\BotService;
 use Forumify\OAuth\Idp\DiscordIdp;
 use Forumify\OAuth\Repository\IdentityProviderRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
+ * Per-connection settings (invite link, role mapping, channels) now live on
+ * DiscordConnection, managed at admin/discord/connections. This form is left with only
+ * the bot-wide toggles that genuinely apply to every server the bot is in.
+ *
  * @extends AbstractType<array<string, mixed>>
  */
 class SettingsType extends AbstractType
@@ -26,8 +26,6 @@ class SettingsType extends AbstractType
     public function __construct(
         private readonly UrlGeneratorInterface $urlGenerator,
         private readonly IdentityProviderRepository $idpRepository,
-        private readonly RoleRepository $roleRepository,
-        private readonly BotService $botService,
         private readonly ?CalendarRepository $calendarRepository = null,
     ) {
     }
@@ -36,12 +34,6 @@ class SettingsType extends AbstractType
     {
         $hasDiscordIdp = $this->idpRepository->count(['type' => DiscordIdp::getType()]) > 0;
         $idpLink = $this->urlGenerator->generate('forumify_admin_identity_providers_list');
-
-        $builder->add('discord__invite_link', TextType::class, [
-            'label' => 'Discord Invite Link',
-            'help' => 'On Discord, next to the channel you want users to join, click the <i class="ph ph-user-plus"></i> icon. Edit the invite link, and set it to never expire, and no usage limit. Copy the link and paste it here.',
-            'help_html' => true,
-        ]);
 
         if ($this->calendarRepository !== null) {
             $builder->add('discord__calendars', ChoiceType::class, [
@@ -84,44 +76,6 @@ class SettingsType extends AbstractType
                 'disabled' => !$hasDiscordIdp,
             ])
         ;
-
-        if ($hasDiscordIdp) {
-            $roleChoices = [];
-            $selectableRoles = $this->roleRepository->findBy(['system' => false], ['position' => 'DESC']);
-            foreach ($selectableRoles as $role) {
-                $roleChoices[$role->getTitle()] = $role->getId();
-            }
-
-            $discordRoleChoices = [];
-            foreach ($this->botService->fetchData('roles') as $role) {
-                if ($role['name'] === '@everyone') {
-                    continue;
-                }
-
-                $discordRoleChoices[$role['name']] = $role['id'];
-            }
-
-            $builder->add('discord__sync_roles', CollectionType::class, [
-                'allow_add' => true,
-                'allow_delete' => true,
-                'by_reference' => false,
-                'required' => false,
-                'label' => 'Role Mapping',
-                'entry_options' => [
-                    'forumify_roles' => $roleChoices,
-                    'discord_roles' => $discordRoleChoices,
-                ],
-                'entry_type' => DiscordRoleMappingType::class,
-            ]);
-        } else {
-            $builder->add('discord__sync_roles', CheckboxType::class, [
-                'required' => false,
-                'label' => 'Sync Roles',
-                'help' => "You must have Discord added as an <a href='$idpLink'>Identity Provider</a> for this to work.",
-                'help_html' => true,
-                'disabled' => true,
-            ]);
-        }
     }
 
     /**

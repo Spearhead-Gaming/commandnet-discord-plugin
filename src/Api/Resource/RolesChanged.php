@@ -15,6 +15,9 @@ class RolesChanged
     public readonly int $id;
 
     #[Groups('RolesChanged')]
+    public string $guildId;
+
+    #[Groups('RolesChanged')]
     public string $discordIdentifier;
 
     /** @var array<string> */
