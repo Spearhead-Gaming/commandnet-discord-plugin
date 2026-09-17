@@ -1,5 +1,5 @@
 {% extends '@Forumify/admin/base.html.twig' %}
-{% set botService = 'Forumify\\Discord\\Service\\BotService::' %}
+{% set botService = 'MajesticDev\\Discord\\Service\\BotService::' %}
 {% block body %}
     <h1>Discord Plugin Settings</h1>
     <p class="flex items-center gap-2">
@@ -35,9 +35,12 @@
                 </p>
             </div>
         {% elseif form is not null %}
-            <div class="box" {{ stimulus_controller('forumify/forumify-discord-plugin/settings_form') }}>
+            <div class="box">
+                <p class="alert-info rich-text mb-4">
+                    Invite links, role mappings, and channel targets are now configured per Discord server -
+                    see <a href="{{ path('forumify_admin_discord_connections_list') }}">Discord Connections</a>.
+                </p>
                 {{ form_start(form) }}
-                {{ form_row(form.discord__invite_link) }}
                 {% if form.discord__calendars is defined %}
                     {{ form_row(form.discord__calendars) }}
                 {% endif %}
@@ -52,30 +55,6 @@
                 </div>
                 {{ form_row(form.discord__force_user_in_server) }}
                 {{ form_row(form.discord__force_matching_username) }}
-                {% if form.discord__sync_roles.vars.prototype is defined %}
-                    {{ form_label(form.discord__sync_roles) }}
-                    <div class="ml-8 mt-2 mb-1 grid-2 gap-2">
-                        <span>forumify role</span>
-                        <span>Discord role</span>
-                    </div>
-                    <div
-                        {{ stimulus_target('forumify/forumify-discord-plugin/settings_form', 'roleMapping') }}
-                        data-prototype="{{ form_widget(form.discord__sync_roles.vars.prototype)|e('html_attr') }}"
-                        data-index="{{ form.discord__sync_roles|length }}"
-                    >
-                        {{ form_widget(form.discord__sync_roles) }}
-                    </div>
-                    <button
-                        class="btn-link btn-small"
-                        type="button"
-                        {{ stimulus_action('forumify/forumify-discord-plugin/settings_form', 'addRoleMapping') }}
-                    >
-                        <i class="ph ph-plus"></i>
-                        Add Role Mapping
-                    </button>
-                {% else %}
-                    {{ form_row(form.discord__sync_roles) }}
-                {% endif %}
                 <div class="flex justify-center items-center gap-2">
                     <button type="submit" class="btn-primary">{{ 'save'|trans }}</button>
                     <a href="{{ path('forumify_admin_plugin_list') }}" class="btn-outlined">{{ 'cancel'|trans }}</a>

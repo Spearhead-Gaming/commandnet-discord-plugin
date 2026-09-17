@@ -1,6 +1,6 @@
 {
-    "name": "@forumify/forumify-discord-plugin",
-    "description": "Frontend assets for forumify discord plugin",
+    "name": "@majesticdev/commandnet-discord-plugin",
+    "description": "Frontend assets for commandnet-discord-plugin",
     "version": "0.1.0",
     "symfony": {
         "controllers": {

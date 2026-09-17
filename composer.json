@@ -1,9 +1,9 @@
 {
     "name": "majesticdev/commandnet-discord-plugin",
-    "description": "Multi-guild fork of forumify-discord-plugin: syncs Discord roles, usernames, slash commands and notifications across one connection per unit's Discord server instead of a single global server.",
+    "description": "Multi-guild Discord bridge for the Command Net plugin suite: syncs Discord roles, usernames, slash commands and notifications across one connection per unit's Discord server.",
     "type": "forumify-plugin",
     "keywords": ["symfony-ux"],
-    "license": "OSL-3.0",
+    "license": "proprietary",
     "require": {
         "forumify/forumify-platform": "^1.2"
     },
@@ -26,9 +26,6 @@
         }
     },
     "extra": {
-        "forumify-plugin-class": "MajesticDev\\Discord\\CommandNetDiscordPlugin",
-        "branch-alias": {
-            "dev-master": "1.1.x-dev"
-        }
+        "forumify-plugin-class": "MajesticDev\\Discord\\CommandNetDiscordPlugin"
     }
 }
