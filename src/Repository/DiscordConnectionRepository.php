@@ -18,7 +18,7 @@ class DiscordConnectionRepository extends AbstractRepository
     }
 
     /**
-     * @return DiscordConnection[]
+     * @return array<int, DiscordConnection>
      */
     public function findActive(): array
     {
