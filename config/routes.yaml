@@ -3,6 +3,14 @@ admin:
   type: attribute
   prefix: admin/discord/
   name_prefix: discord_admin_
+  exclude: ../src/Controller/Admin/DiscordConnectionController.php
+
+# Forumify's CRUD templates expect a CRUD controller's routes to be named forumify_admin_*.
+admin_connections:
+  resource: ../src/Controller/Admin/DiscordConnectionController.php
+  type: attribute
+  prefix: admin/
+  name_prefix: forumify_admin_
 
 frontend:
   resource: '../src/Controller/Frontend'
