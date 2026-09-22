@@ -7,3 +7,4 @@ parameters:
         - src
     ignoreErrors:
         - '#.+Forumify\\Calendar.+#'
+        - '#.+MajesticDev\\CommandNet.+#'
