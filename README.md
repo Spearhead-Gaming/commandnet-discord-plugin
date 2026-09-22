@@ -69,6 +69,13 @@ Checked as `discord.<area>.<action>`.
   channel something happened" primitive. `CalendarEventListener` uses it for calendar
   cross-posting today; it's the seam future plugins (id-card, a server manager, S3 tools)
   are meant to build on instead of talking to the bot directly.
+- **`PatrolAnnouncementListener`** cross-posts a Command Net patrol the same way, on its
+  `Operation` postPersist rather than a calendar event, so a patrol announces once whether
+  it's posted from the web or from `/command-net-patrol-create`. `DiscordPatrolReminderNotifier`
+  decorates Command Net's own `PatrolReminderNotifier` (a no-op there without this plugin)
+  to also echo the AAR due/overdue reminder to Discord, `@mention`-ing the leader. Both
+  reference `MajesticDev\CommandNet\*` classes the same un-required way `CalendarEventListener`
+  references the calendar plugin's - see phpstan.neon's matching ignore rule.
 - **Discord role IDs are pasted, not fetched live.** `DiscordRoleMappingType` uses a plain
   text field with instructions (enable Developer Mode, right-click the role, copy ID)
   rather than a live dropdown from the bot — editing a mapping doesn't require the bot to

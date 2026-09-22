@@ -5,5 +5,13 @@ parameters:
     level: 8
     paths:
         - src
+    # implements/extends an unknown class is a non-ignorable PHPStan error category -
+    # a regex in ignoreErrors can't suppress it, so this file (the only one that
+    # implements a MajesticDev\CommandNet interface, rather than just referencing one)
+    # has to be excluded outright, the same way commandnet-plugin excludes all of
+    # src/Discord for the equivalent "optional plugin not installed here" reason.
+    excludePaths:
+        - src/Service/DiscordPatrolReminderNotifier.php
     ignoreErrors:
         - '#.+Forumify\\Calendar.+#'
+        - '#.+MajesticDev\\CommandNet.+#'
