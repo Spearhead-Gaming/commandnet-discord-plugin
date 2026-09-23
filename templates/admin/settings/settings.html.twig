@@ -16,20 +16,18 @@
     <div class="mt-6">
         {% if status == constant(botService ~ 'STATUS_NOT_REGISTERED') %}
             <div class="box rich-text">
-                <p class="mb-4">Start by inviting the forumify bot to your Discord server using the button below. You must be an administrator on the server you want to use this bot on.</p>
-                <p class="text-center">
-                    <a class="btn-primary mb-6" href="https://discord.com/oauth2/authorize?client_id=1409471068388986942" target="_blank">
-                        <i class="ph ph-discord-logo"></i>
-                        Invite forumify bot
-                    </a>
-                </p>
-                <p>Finally, to activate the bot in your server, use the <strong>"/register"</strong> Discord command in any text channel on your server and fill in the following values:</p>
-                <ul>
-                    <li><strong>url:</strong> {{ app.request.uri|replace({ (app.request.requestUri): '', 'http://': 'https://' }) }}</li>
-                    <li><strong>client_id:</strong> {{ client.clientId }}</li>
-                    <li><strong>client_secret:</strong> {{ client.clientSecret }}</li>
-                </ul>
-                <p>Once completed, click the refresh button below.</p>
+                <p class="mb-4">This instance uses a self-hosted Discord bot, not forumify's own hosted bot - there's nothing to invite from here. Instead:</p>
+                <ol>
+                    <li>Invite your bot's own Discord application to your server from that application's page in the <a href="https://discord.com/developers/applications" target="_blank">Discord Developer Portal</a> (OAuth2 &rarr; URL Generator, scopes <code>bot</code> + <code>applications.commands</code>). You must be an administrator on the server you want to use this bot on.</li>
+                    <li>Deploy/start the bot process pointed at this forumify instance (<code>{{ app.request.uri|replace({ (app.request.requestUri): '', 'http://': 'https://' }) }}</code>), giving it these OAuth client credentials so it can authenticate its API calls here:
+                        <ul>
+                            <li><strong>client_id:</strong> {{ client.clientId }}</li>
+                            <li><strong>client_secret:</strong> {{ client.clientSecret }}</li>
+                        </ul>
+                    </li>
+                    <li>On startup, the bot registers itself with forumify automatically - no Discord command needed.</li>
+                </ol>
+                <p>Once it's running, click refresh below.</p>
                 <p class="text-center">
                     <a class="btn-outlined" href="{{ path('discord_admin_settings') }}"><i class="ph ph-arrows-clockwise"></i>Refresh</a>
                 </p>
