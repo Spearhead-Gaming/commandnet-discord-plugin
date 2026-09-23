@@ -10,3 +10,5 @@ public/styles
 coverage/
 .phpunit.*
 var
+
+dev-credentials.local.md
