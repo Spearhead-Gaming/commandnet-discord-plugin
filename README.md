@@ -85,11 +85,10 @@ Checked as `discord.<area>.<action>`.
 
 - **No automated test coverage.** The `tests/` harness boots (CI runs it green), but
   `tests/Tests/` only has the kernel bootstrap — no actual test classes exist yet.
-- **The "invite the bot" admin flow is stale.** `SettingsController`'s not-registered
-  branch still points at an OAuth client-id/secret flow and a hardcoded invite link for
-  forumify's own hosted bot — `commandnet-discord-bot` self-registers via
-  `POST /discord/register-bot` instead, so that UI doesn't reflect how registration
-  actually works now.
+- **`commandnet-discord-bot` self-registers via `POST /api/discord/register-bot`** - the
+  `/api` prefix comes from `api_platform`'s routing config (every `ApiResource`, including
+  this plugin's, lives under it), not from anything in this plugin's own code, so it's easy
+  to miss when reading `DiscordRegistration`'s `uriTemplate` alone.
 - **The connections form's role-mapping table has no add/remove UI wired up.**
   `assets/dist/settings_form_controller.js` used to power exactly this for the old
   single-connection settings form; it's currently unused rather than repointed at the new
