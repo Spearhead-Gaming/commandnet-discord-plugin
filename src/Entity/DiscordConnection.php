@@ -128,18 +128,22 @@ class DiscordConnection
 
     public function addRoleMapping(DiscordRoleMapping $roleMapping): void
     {
-        if (!$this->roleMappings->contains($roleMapping)) {
-            $this->roleMappings->add($roleMapping);
-            $roleMapping->setConnection($this);
+        if ($this->roleMappings->contains($roleMapping)) {
+            return;
         }
+
+        $this->roleMappings->add($roleMapping);
+        $roleMapping->setConnection($this);
     }
 
     public function removeRoleMapping(DiscordRoleMapping $roleMapping): void
     {
-        if ($this->roleMappings->removeElement($roleMapping)) {
-            if ($roleMapping->getConnection() === $this) {
-                $roleMapping->setConnection(null);
-            }
+        if (!$this->roleMappings->removeElement($roleMapping)) {
+            return;
+        }
+
+        if ($roleMapping->getConnection() === $this) {
+            $roleMapping->setConnection(null);
         }
     }
 
