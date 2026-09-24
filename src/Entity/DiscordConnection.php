@@ -126,6 +126,23 @@ class DiscordConnection
         return $this->roleMappings;
     }
 
+    public function addRoleMapping(DiscordRoleMapping $roleMapping): void
+    {
+        if (!$this->roleMappings->contains($roleMapping)) {
+            $this->roleMappings->add($roleMapping);
+            $roleMapping->setConnection($this);
+        }
+    }
+
+    public function removeRoleMapping(DiscordRoleMapping $roleMapping): void
+    {
+        if ($this->roleMappings->removeElement($roleMapping)) {
+            if ($roleMapping->getConnection() === $this) {
+                $roleMapping->setConnection(null);
+            }
+        }
+    }
+
     public function __toString(): string
     {
         return $this->label;
