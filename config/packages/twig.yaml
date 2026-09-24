@@ -1,0 +1,3 @@
+twig:
+    form_themes:
+        - '@CommandNetDiscordPlugin/form/role_mapping_collection.html.twig'
