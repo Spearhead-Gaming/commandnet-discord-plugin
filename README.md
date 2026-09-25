@@ -57,6 +57,39 @@ Checked as `discord.<area>.<action>`.
 | --- | --- |
 | `discord.admin.connections.view` / `.manage` | View / create, edit, and delete Discord connections and their role mappings. |
 
+## Importing Discord members
+
+Forumify's built-in `user` role only applies to accounts that exist, so a Discord member who has
+never logged in has no permissions. To create accounts up front:
+
+```bash
+php bin/console discord:members:import          # dry run: reports what it would do
+php bin/console discord:members:import --apply  # creates the accounts
+```
+
+For every human member of every active connection's guild it creates a password-less, email-less
+account linked to their Discord id. When they later log in with Discord, forumify finds that linked
+account and reuses it. Members who are already linked are left alone. Requires a bot that supports
+`GET /data?type=guildMembers` (commandnet-discord-bot).
+
+Members whose Discord username or display name equals an existing forum username are **skipped and
+listed**, because a placeholder linked next to their real account would leave them with two once they
+connect Discord. Re-run the command after new people join the server.
+
+### Avoiding duplicate accounts
+
+- `discord:members:import --match` links a member to the forum account whose username **exactly**
+  equals their Discord *username* (display names are never used, since anyone can set theirs to
+  anything). Run it without `--apply` first and read the list.
+- `discord:members:link <forum-username> <discord-id> [--apply]` does the same for one person, for
+  cases the exact match misses (Discord ids are visible with Developer Mode on).
+- If an imported placeholder already holds that Discord id, it is deleted and the id moves to the
+  real account, but only when the placeholder is untouched: no email, never active, no roles.
+  Otherwise nothing changes and the command says why. An account that already has a different
+  Discord link is left alone too.
+- Exact name matching can still be wrong if a different person holds that name on Discord, so
+  review the dry run before `--apply`.
+
 ## Design notes
 
 - **One bot, many connections.** [`commandnet-discord-bot`](https://github.com/Spearhead-Gaming/commandnet-discord-bot)

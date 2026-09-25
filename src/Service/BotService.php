@@ -89,6 +89,19 @@ class BotService
         return $this->fetchData('roles', ['guildId' => $guildId]);
     }
 
+    /**
+     * The human members of a guild (bots left out), for the member import.
+     *
+     * @return array<array{id: string, username: string, displayName: string}>
+     *
+     * @throws DiscordBotException
+     */
+    public function getGuildMembers(string $guildId): array
+    {
+        /** @var array<array{id: string, username: string, displayName: string}> */
+        return $this->fetchData('guildMembers', ['guildId' => $guildId]);
+    }
+
     public function updateUsername(User $user): void
     {
         if (!$this->settingRepository->get('discord.force_matching_username')) {
