@@ -58,6 +58,7 @@ class DiscordConnectionType extends AbstractType
                 'allow_delete' => true,
                 'by_reference' => false,
                 'required' => false,
+                'block_prefix' => 'discord_role_mapping_collection',
             ])
         ;
     }

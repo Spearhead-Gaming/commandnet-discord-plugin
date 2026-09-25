@@ -1,0 +1,43 @@
+{#
+ # Custom widget for DiscordConnectionType's roleMappings field (see the
+ # 'block_prefix' option set there). Plain Symfony CollectionType rendering has
+ # no add/remove UI of its own - that needs JS. This reuses the
+ # settings_form Stimulus controller that originally drove the same role
+ # mapping list back when it lived on the global Settings form, replicating
+ # the flat row markup it expects (a row div whose first child directly wraps
+ # the two field widgets, with no per-field label/help wrapper) so the
+ # existing addRoleMapping()/_formatAndAddDelete() JS keeps working unchanged.
+ #}
+{% block discord_role_mapping_collection_widget %}
+    <div{{ stimulus_controller('majesticdev/commandnet-discord-plugin/settings_form') }}>
+        <div class="grid-2 gap-2 mb-1">
+            <span>Forumify role</span>
+            <span>Discord role</span>
+        </div>
+        <div
+            {{ stimulus_target('majesticdev/commandnet-discord-plugin/settings_form', 'roleMapping') }}
+            data-prototype="{{ ('<div id="' ~ form.vars.prototype.vars.id ~ '"><div>' ~ form_widget(form.vars.prototype.forumifyRole) ~ form_widget(form.vars.prototype.discordRoleId) ~ '</div></div>')|e('html_attr') }}"
+            data-index="{{ form|length }}"
+        >
+            <div>
+                {% for entry in form %}
+                    <div id="{{ entry.vars.id }}">
+                        <div>
+                            {{ form_widget(entry.forumifyRole) }}
+                            {{ form_widget(entry.discordRoleId) }}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <button
+            class="btn-link btn-small"
+            type="button"
+            {{ stimulus_action('majesticdev/commandnet-discord-plugin/settings_form', 'addRoleMapping') }}
+        >
+            <i class="ph ph-plus"></i>
+            Add Role Mapping
+        </button>
+        <p class="text-small mt-1">Discord role ID: right-click the role in Server Settings &gt; Roles with Developer Mode enabled.</p>
+    </div>
+{% endblock %}
