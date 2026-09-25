@@ -98,10 +98,12 @@ class DiscordMemberImporter
             }
 
             $result['created'][$id] = $member['username'];
-            if ($apply) {
-                $user = $this->createUser($member);
-                $this->idpUserRepository->save(new IdentityProviderUser($user, $idp, $id, $member['username']));
+            if (!$apply) {
+                continue;
             }
+
+            $user = $this->createUser($member);
+            $this->idpUserRepository->save(new IdentityProviderUser($user, $idp, $id, $member['username']));
         }
 
         return $result;
