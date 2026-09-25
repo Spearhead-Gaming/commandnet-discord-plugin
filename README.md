@@ -76,6 +76,15 @@ Checked as `discord.<area>.<action>`.
   to also echo the AAR due/overdue reminder to Discord, `@mention`-ing the leader. Both
   reference `MajesticDev\CommandNet\*` classes the same un-required way `CalendarEventListener`
   references the calendar plugin's - see phpstan.neon's matching ignore rule.
+- **`TransferInviteListener`** watches `Assignment` postPersist: a new *primary*, still-active
+  assignment (a transfer, or first enlistment) started within the last 7 days, to a unit whose
+  `discordGuildId` matches an active `DiscordConnection` with an invite link, hands off to
+  `TransferInviteNotifier`. That sends the soldier a Forumify notification (plus an email when
+  they have email notifications on) linking to `/discord/join/{guildId}`, whether or not they
+  have linked Discord. Delivery is its own service on purpose: the planned next phase adds a
+  Discord DM with a single-use, ~7-day invite requested from the bot, falling back to this
+  notification when DMs are closed. Only new assignments trigger it; editing an existing
+  assignment's unit does not.
 - **Discord role IDs are pasted, not fetched live.** `DiscordRoleMappingType` uses a plain
   text field with instructions (enable Developer Mode, right-click the role, copy ID)
   rather than a live dropdown from the bot — editing a mapping doesn't require the bot to
@@ -83,8 +92,8 @@ Checked as `discord.<area>.<action>`.
 
 ## Known gaps
 
-- **No automated test coverage.** The `tests/` harness boots (CI runs it green), but
-  `tests/Tests/` only has the kernel bootstrap — no actual test classes exist yet.
+- **Almost no automated test coverage.** The `tests/` harness boots (CI runs it green); the only
+  real test is `TransferInviteListenerTest`, the decision logic for transfer invites.
 - **`commandnet-discord-bot` self-registers via `POST /api/discord/register-bot`** - the
   `/api` prefix comes from `api_platform`'s routing config (every `ApiResource`, including
   this plugin's, lives under it), not from anything in this plugin's own code, so it's easy
