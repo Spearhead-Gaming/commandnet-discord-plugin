@@ -55,6 +55,9 @@ class BotService
     {
         try {
             $this->getClient()->post('/data', [
+                // Without this the bot's JSON body parser skips the body and sees an empty
+                // payload ("Unknown payload type undefined"). JSON-LD is valid JSON.
+                'headers' => ['Content-Type' => 'application/json'],
                 'body' => $this->serializer->serialize($payload, 'jsonld'),
             ]);
         } catch (GuzzleException $ex) {

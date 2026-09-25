@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit;
+namespace MajesticDev\Discord\Tests\Unit;
 
 use DateTime;
 use Forumify\Core\Entity\Role;

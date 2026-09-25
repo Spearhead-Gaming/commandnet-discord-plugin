@@ -8,7 +8,9 @@ use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\ORM\Events;
 use MajesticDev\CommandNet\Entity\Enum\OperationType;
 use MajesticDev\CommandNet\Entity\Operation;
+use MajesticDev\Discord\Exception\DiscordBotException;
 use MajesticDev\Discord\Service\BotService;
+use Psr\Log\LoggerInterface;
 
 /**
  * Cross-posts a newly-created patrol to every connection's announcements channel, the same
@@ -23,8 +25,10 @@ use MajesticDev\Discord\Service\BotService;
 #[AsEntityListener(Events::postPersist, method: 'postPersist', entity: Operation::class)]
 class PatrolAnnouncementListener
 {
-    public function __construct(private readonly BotService $botService)
-    {
+    public function __construct(
+        private readonly BotService $botService,
+        private readonly LoggerInterface $logger,
+    ) {
     }
 
     public function postPersist(Operation $operation): void
@@ -33,7 +37,13 @@ class PatrolAnnouncementListener
             return;
         }
 
-        $this->botService->postAnnouncement($this->formatMessage($operation));
+        // postPersist runs inside the flush transaction, so an exception here would roll the
+        // patrol back. A Discord outage must never stop a patrol being created.
+        try {
+            $this->botService->postAnnouncement($this->formatMessage($operation));
+        } catch (DiscordBotException $ex) {
+            $this->logger->error('Could not announce the new patrol to Discord.', ['exception' => $ex]);
+        }
     }
 
     private function formatMessage(Operation $operation): string
