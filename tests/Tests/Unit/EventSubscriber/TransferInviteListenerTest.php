@@ -17,6 +17,15 @@ use PHPUnit\Framework\TestCase;
 
 class TransferInviteListenerTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        // commandnet-plugin is an optional, un-required dependency (see phpstan.neon), so CI
+        // without it cannot build Assignment/Unit.
+        if (!class_exists(Unit::class)) {
+            $this->markTestSkipped("commandnet-plugin is not installed.");
+        }
+    }
+
     /**
      * @return iterable<string, array{bool, callable(Assignment, DiscordConnection, Unit): void}>
      */
