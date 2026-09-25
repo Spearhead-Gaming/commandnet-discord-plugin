@@ -47,6 +47,11 @@ class DiscordConnectionType extends AbstractType
                 'label' => 'Announcements Channel ID',
                 'required' => false,
             ])
+            ->add('patrolsChannelId', TextType::class, [
+                'label' => 'Patrols Channel ID',
+                'required' => false,
+                'help' => 'Channel new patrols are posted to, with Join, Leave and Submit AAR buttons. Leave empty to post plain patrol announcements to the announcements channel instead.',
+            ])
             ->add('active', CheckboxType::class, [
                 'required' => false,
                 'help' => 'Uncheck to stop syncing to this server without deleting the connection.',

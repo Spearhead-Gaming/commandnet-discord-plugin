@@ -53,13 +53,40 @@ class BotService
      */
     public function sendData(mixed $payload): void
     {
+        $this->post($payload);
+    }
+
+    /**
+     * For payloads the bot answers with data - a PostMessage answers with where the message
+     * landed ({channelId, messageId}), which is what makes it editable later.
+     *
+     * @return array<string, mixed>
+     *
+     * @throws DiscordBotException
+     */
+    public function sendDataForResult(mixed $payload): array
+    {
         try {
-            $this->getClient()->post('/data', [
+            $result = json_decode($this->post($payload), true, 512, JSON_THROW_ON_ERROR);
+        } catch (JsonException $ex) {
+            throw new DiscordBotException('The bot did not answer with data.', previous: $ex);
+        }
+
+        return is_array($result) ? $result : [];
+    }
+
+    /**
+     * @throws DiscordBotException
+     */
+    private function post(mixed $payload): string
+    {
+        try {
+            return $this->getClient()->post('/data', [
                 // Without this the bot's JSON body parser skips the body and sees an empty
                 // payload ("Unknown payload type undefined"). JSON-LD is valid JSON.
                 'headers' => ['Content-Type' => 'application/json'],
                 'body' => $this->serializer->serialize($payload, 'jsonld'),
-            ]);
+            ])->getBody()->getContents();
         } catch (GuzzleException $ex) {
             throw new DiscordBotException('Unable to send data to bot.', previous: $ex);
         }

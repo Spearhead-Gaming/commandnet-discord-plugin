@@ -46,6 +46,12 @@ class DiscordConnection
     #[ORM\Column(length: 32, nullable: true)]
     private ?string $announcementsChannelId = null;
 
+    /**
+     * Where new patrols are posted, with their Join / Leave / Submit AAR buttons.
+     */
+    #[ORM\Column(length: 32, nullable: true)]
+    private ?string $patrolsChannelId = null;
+
     #[ORM\Column]
     private bool $active = true;
 
@@ -106,6 +112,16 @@ class DiscordConnection
     public function setAnnouncementsChannelId(?string $announcementsChannelId): void
     {
         $this->announcementsChannelId = $announcementsChannelId;
+    }
+
+    public function getPatrolsChannelId(): ?string
+    {
+        return $this->patrolsChannelId;
+    }
+
+    public function setPatrolsChannelId(?string $patrolsChannelId): void
+    {
+        $this->patrolsChannelId = $patrolsChannelId;
     }
 
     public function isActive(): bool

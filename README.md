@@ -37,7 +37,8 @@ bin/console doctrine:migrations:migrate
 
 | Entity | Notes |
 | --- | --- |
-| `DiscordConnection` | One Discord server the bot has been invited to — the community server, or a unit's private one. Guild ID, invite link, ops-log/announcements channel IDs, active flag. |
+| `DiscordConnection` | One Discord server the bot has been invited to — the community server, or a unit's private one. Guild ID, invite link, ops-log/announcements/patrols channel IDs, active flag. |
+| `PatrolMessage` | Which Discord message a patrol was posted as, per server, so the post can be edited later. Holds the patrol as a plain id (commandnet-plugin is optional). |
 | `DiscordRoleMapping` | "Grant/revoke this Discord role whenever a user gains/loses this forumify Role" — scoped to one `DiscordConnection`, so the same forumify Role can map to a different Discord role in each unit's server. |
 
 ## Admin
@@ -89,6 +90,23 @@ connect Discord. Re-run the command after new people join the server.
   Discord link is left alone too.
 - Exact name matching can still be wrong if a different person holds that name on Discord, so
   review the dry run before `--apply`.
+
+## Patrol posts
+
+With commandnet-plugin installed, set **Patrols Channel ID** on a Discord connection and every new
+patrol is posted there as an embed (when, where, leader, details, and who has joined) with **Join**,
+**Leave** and **Submit AAR** buttons. The buttons run the existing `/command-net-patrol-join`,
+`-leave` and `-aar` commands, so the same permissions and rules apply, and replies are private to
+whoever clicked. Submit AAR opens a form.
+
+The post is edited as people join or leave, and loses its buttons (and is marked Cancelled or
+Completed) when the patrol is cancelled or its AAR is filed. A connection with no patrols channel
+gets the plain text announcement in its announcements channel instead, with no buttons.
+
+Needs a bot that supports buttons and `EditMessage` (commandnet-discord-bot). Updating the post
+runs after the patrol is saved, and a Discord failure is logged, never thrown, so it can never stop
+a patrol being created. The plugin adds one migration: a `patrols_channel_id` column and the
+`discord_patrol_message` table.
 
 ## Design notes
 
