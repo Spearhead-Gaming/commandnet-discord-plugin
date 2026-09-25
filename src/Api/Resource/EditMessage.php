@@ -9,35 +9,34 @@ use ApiPlatform\Metadata\ApiResource;
 use Symfony\Component\Serializer\Attribute\Groups;
 
 /**
- * Posts a plain message to one channel of one connection's server. The bot recognises
- * it by this class's JSON-LD @type ("PostMessage"), the same way it recognises
- * RolesChanged and UsernameChanged.
+ * Changes a message the bot posted earlier (a patrol post whose attendee list moved). Only
+ * the parts that are set are changed; an empty components array removes the buttons. The bot
+ * recognises it by this class's JSON-LD @type ("EditMessage").
  */
 #[ApiResource(operations: [])]
-class PostMessage
+class EditMessage
 {
     #[ApiProperty(identifier: true)]
     public readonly int $id;
 
-    #[Groups('PostMessage')]
+    #[Groups('EditMessage')]
     public string $guildId;
 
-    #[Groups('PostMessage')]
+    #[Groups('EditMessage')]
     public string $channelId;
 
-    #[Groups('PostMessage')]
+    #[Groups('EditMessage')]
+    public string $messageId;
+
+    #[Groups('EditMessage')]
     public ?string $content = null;
 
     /** @var array<string, mixed>|null */
-    #[Groups('PostMessage')]
+    #[Groups('EditMessage')]
     public ?array $embed = null;
 
-    /**
-     * Discord action rows (buttons), in Discord's own JSON format.
-     *
-     * @var array<int, array<string, mixed>>|null
-     */
-    #[Groups('PostMessage')]
+    /** @var array<int, array<string, mixed>>|null */
+    #[Groups('EditMessage')]
     public ?array $components = null;
 
     public function __construct()
