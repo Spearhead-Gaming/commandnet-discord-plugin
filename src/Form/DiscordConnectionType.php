@@ -38,6 +38,11 @@ class DiscordConnectionType extends AbstractType
                 'required' => false,
                 'help' => 'Invite link for this server, set to never expire with no usage limit.',
             ])
+            ->add('inviteChannelId', TextType::class, [
+                'label' => 'Invite Channel ID',
+                'required' => false,
+                'help' => 'Channel the bot creates single-use invites to, which are sent by DM to members transferred into this unit. The bot needs the Create Invite permission there. Leave empty to only send the notification with the invite link above.',
+            ])
             ->add('opsLogChannelId', TextType::class, [
                 'label' => 'Ops Log Channel ID',
                 'required' => false,

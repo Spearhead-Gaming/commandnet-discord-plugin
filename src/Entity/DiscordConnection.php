@@ -52,6 +52,12 @@ class DiscordConnection
     #[ORM\Column(length: 32, nullable: true)]
     private ?string $patrolsChannelId = null;
 
+    /**
+     * Channel the bot creates single-use invites to (it needs Create Invite there).
+     */
+    #[ORM\Column(length: 32, nullable: true)]
+    private ?string $inviteChannelId = null;
+
     #[ORM\Column]
     private bool $active = true;
 
@@ -92,6 +98,16 @@ class DiscordConnection
     public function setInviteLink(?string $inviteLink): void
     {
         $this->inviteLink = $inviteLink;
+    }
+
+    public function getInviteChannelId(): ?string
+    {
+        return $this->inviteChannelId;
+    }
+
+    public function setInviteChannelId(?string $inviteChannelId): void
+    {
+        $this->inviteChannelId = $inviteChannelId;
     }
 
     public function getOpsLogChannelId(): ?string
