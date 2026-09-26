@@ -37,7 +37,7 @@ bin/console doctrine:migrations:migrate
 
 | Entity | Notes |
 | --- | --- |
-| `DiscordConnection` | One Discord server the bot has been invited to — the community server, or a unit's private one. Guild ID, invite link, ops-log/announcements/patrols channel IDs, active flag. |
+| `DiscordConnection` | One Discord server the bot has been invited to — the community server, or a unit's private one. Guild ID, invite link, invite/ops-log/announcements/patrols channel IDs, active flag. |
 | `PatrolMessage` | Which Discord message a patrol was posted as, per server, so the post can be edited later. Holds the patrol as a plain id (commandnet-plugin is optional). |
 | `DiscordRoleMapping` | "Grant/revoke this Discord role whenever a user gains/loses this forumify Role" — scoped to one `DiscordConnection`, so the same forumify Role can map to a different Discord role in each unit's server. |
 
@@ -130,11 +130,14 @@ a patrol being created. The plugin adds one migration: a `patrols_channel_id` co
 - **`TransferInviteListener`** watches `Assignment` postPersist: a new *primary*, still-active
   assignment (a transfer, or first enlistment) started within the last 7 days, to a unit whose
   `discordGuildId` matches an active `DiscordConnection` with an invite link, hands off to
-  `TransferInviteNotifier`. That sends the soldier a Forumify notification (plus an email when
-  they have email notifications on) linking to `/discord/join/{guildId}`, whether or not they
-  have linked Discord. Delivery is its own service on purpose: the planned next phase adds a
-  Discord DM with a single-use, ~7-day invite requested from the bot, falling back to this
-  notification when DMs are closed. Only new assignments trigger it; editing an existing
+  `TransferInviteNotifier`. That DMs the soldier a single-use, 7-day invite to the connection's
+  `inviteChannelId` (`BotService::createInvite` + `sendDirectMessage`), so the permanent public
+  link never reaches a private unit server. If the connection has no invite channel, the
+  soldier has no linked Discord account, the DM can't be delivered (DMs closed, bot offline or
+  not yet updated, no Create Invite permission), it falls back to a Forumify notification
+  (plus an email when they have email notifications on) linking to `/discord/join/{guildId}`;
+  never both. A member already in the server is left alone. The old unit's server is not
+  touched (role sync removes the old roles). Only new assignments trigger it; editing an existing
   assignment's unit does not.
 - **Discord role IDs are pasted, not fetched live.** `DiscordRoleMappingType` uses a plain
   text field with instructions (enable Developer Mode, right-click the role, copy ID)
@@ -167,3 +170,10 @@ a patrol being created. The plugin adds one migration: a `patrols_channel_id` co
 - [`forumify-id-card-plugin`](https://github.com/MajesticDevBox/forumify-id-card-plugin) —
   reaches into `Forumify\Discord`'s (now `MajesticDev\Discord`'s) command interface for its
   own Discord slash commands the same way `commandnet-plugin` does.
+
+## Deploying DM invites
+
+Redeploy the bot (its README's Docker/Portainer guide) **before** this plugin goes to
+production, and give the bot **Create Instant Invite** in each connection's invite channel.
+Order is safe either way: until the bot understands `CreateInvite`/`DirectMessage`, the plugin
+just falls back to the notification. Then set "Invite Channel ID" on each connection.

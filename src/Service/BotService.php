@@ -7,6 +7,8 @@ namespace MajesticDev\Discord\Service;
 use Forumify\Core\Entity\Role;
 use Forumify\Core\Entity\User;
 use Forumify\Core\Repository\SettingRepository;
+use MajesticDev\Discord\Api\Resource\CreateInvite;
+use MajesticDev\Discord\Api\Resource\DirectMessage;
 use MajesticDev\Discord\Api\Resource\PostMessage;
 use MajesticDev\Discord\Api\Resource\RolesChanged;
 use MajesticDev\Discord\Api\Resource\UsernameChanged;
@@ -22,6 +24,7 @@ use Forumify\OAuth\Repository\OAuthClientRepository;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use JsonException;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
 /**
@@ -45,6 +48,7 @@ class BotService
         private readonly OAuthClientRepository $oAuthClientRepository,
         private readonly IdentityProviderUserRepository $idpUserRepository,
         private readonly DiscordConnectionRepository $connectionRepository,
+        private readonly LoggerInterface $logger,
     ) {
     }
 
@@ -90,6 +94,54 @@ class BotService
         } catch (GuzzleException $ex) {
             throw new DiscordBotException('Unable to send data to bot.', previous: $ex);
         }
+    }
+
+    /**
+     * A single-use, 7-day invite to the connection's invite channel, or null when the channel
+     * isn't set or the bot can't make one (offline, no Create Invite permission, ...).
+     */
+    public function createInvite(DiscordConnection $connection): ?string
+    {
+        $channelId = $connection->getInviteChannelId();
+        if ($channelId === null) {
+            return null;
+        }
+
+        try {
+            $dto = new CreateInvite();
+            $dto->guildId = $connection->getGuildId();
+            $dto->channelId = $channelId;
+            $url = $this->sendDataForResult($dto)['url'] ?? null;
+        } catch (DiscordBotException $ex) {
+            $this->logger->warning('Could not create a Discord invite.', ['exception' => $ex, 'guild' => $connection->getGuildId()]);
+            return null;
+        }
+
+        return is_string($url) && $url !== '' ? $url : null;
+    }
+
+    /**
+     * True only when the bot confirms the DM was delivered; a closed-DMs member is a normal
+     * false, not an error.
+     */
+    public function sendDirectMessage(string $guildId, string $discordUserId, string $content): bool
+    {
+        try {
+            $dto = new DirectMessage();
+            $dto->guildId = $guildId;
+            $dto->discordUserId = $discordUserId;
+            $dto->content = $content;
+            $result = $this->sendDataForResult($dto);
+        } catch (DiscordBotException $ex) {
+            $this->logger->warning('Could not send a Discord DM.', ['exception' => $ex, 'user' => $discordUserId]);
+            return false;
+        }
+
+        if (($result['ok'] ?? false) !== true) {
+            $this->logger->info('Discord DM not delivered.', ['user' => $discordUserId, 'reason' => $result['reason'] ?? 'unknown']);
+            return false;
+        }
+        return true;
     }
 
     /**
