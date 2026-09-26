@@ -12,6 +12,7 @@ use MajesticDev\CommandNet\Entity\Enum\RsvpStatus;
 use MajesticDev\CommandNet\Entity\Operation;
 use MajesticDev\CommandNet\Entity\OperationRSVP;
 use MajesticDev\CommandNet\Entity\SoldierProfile;
+use MajesticDev\Discord\Api\Resource\DeleteMessage;
 use MajesticDev\Discord\Api\Resource\EditMessage;
 use MajesticDev\Discord\Api\Resource\PostMessage;
 use MajesticDev\Discord\Entity\DiscordConnection;
@@ -34,13 +35,16 @@ class PatrolPostServiceTest extends TestCase
     /** @var list<PatrolMessage> */
     private array $saved = [];
 
+    /** @var list<PatrolMessage> */
+    private array $removed = [];
+
     protected function setUp(): void
     {
         // commandnet-plugin is an optional, un-required dependency (see phpstan.neon).
         if (!class_exists(Operation::class)) {
             $this->markTestSkipped('commandnet-plugin is not installed.');
         }
-        $this->sent = $this->saved = [];
+        $this->sent = $this->saved = $this->removed = [];
     }
 
     private function patrol(): Operation
@@ -80,6 +84,7 @@ class PatrolPostServiceTest extends TestCase
         ?PatrolMessage $existing = null,
         ?LoggerInterface $logger = null,
         bool $botFails = false,
+        array $posts = [],
     ): PatrolPostService {
         $bot = $this->createStub(BotService::class);
         $bot->method('sendData')->willReturnCallback(function (object $payload) use ($botFails): void {
@@ -101,8 +106,12 @@ class PatrolPostServiceTest extends TestCase
 
         $messages = $this->createStub(PatrolMessageRepository::class);
         $messages->method('findForPatrol')->willReturn($existing);
+        $messages->method('findAllForPatrol')->willReturn($posts);
         $messages->method('save')->willReturnCallback(function (PatrolMessage $m): void {
             $this->saved[] = $m;
+        });
+        $messages->method('remove')->willReturnCallback(function (PatrolMessage $m): void {
+            $this->removed[] = $m;
         });
 
         $urls = $this->createStub(UrlGeneratorInterface::class);
@@ -115,6 +124,40 @@ class PatrolPostServiceTest extends TestCase
             $urls,
             $logger ?? $this->createStub(LoggerInterface::class),
         );
+    }
+
+    public function testDeletingAPatrolDeletesItsPostsFromEveryServerAndForgetsThem(): void
+    {
+        $posts = [new PatrolMessage(12, 'g1', 'c1', 'm1'), new PatrolMessage(12, 'g2', 'c2', 'm2')];
+
+        $this->service($this->connection('c1'), null, null, false, $posts)->removePosts(12);
+
+        self::assertCount(2, $this->sent);
+        self::assertContainsOnlyInstancesOf(DeleteMessage::class, $this->sent);
+        self::assertSame(
+            [['g1', 'c1', 'm1'], ['g2', 'c2', 'm2']],
+            array_map(static fn (DeleteMessage $d) => [$d->guildId, $d->channelId, $d->messageId], $this->sent),
+        );
+        self::assertSame($posts, $this->removed);
+    }
+
+    public function testAPostThatCannotBeDeletedIsLoggedAndStillForgotten(): void
+    {
+        $posts = [new PatrolMessage(12, 'g1', 'c1', 'm1')];
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects(self::once())->method('error');
+
+        $this->service($this->connection('c1'), null, $logger, true, $posts)->removePosts(12);
+
+        self::assertSame($posts, $this->removed);
+    }
+
+    public function testDeletingAPatrolThatWasNeverPostedSendsNothing(): void
+    {
+        $this->service($this->connection('c1'))->removePosts(12);
+
+        self::assertSame([], $this->sent);
+        self::assertSame([], $this->removed);
     }
 
     public function testANewPatrolIsPostedWithButtonsAndRemembered(): void

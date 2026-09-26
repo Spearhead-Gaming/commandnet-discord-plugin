@@ -103,6 +103,12 @@ The post is edited as people join or leave, and loses its buttons (and is marked
 Completed) when the patrol is cancelled or its AAR is filed. A connection with no patrols channel
 gets the plain text announcement in its announcements channel instead, with no buttons.
 
+**Deleting a patrol deletes its posts.** However the patrol is deleted (the admin list, or a purge
+in commandnet-plugin), its post is removed from every server's patrols channel and the stored
+message records are dropped. This needs a bot that supports `DeleteMessage`. If a post cannot be
+deleted (the bot is down, or has lost its permission), that is logged and the post is left for a
+person to remove by hand.
+
 Needs a bot that supports buttons and `EditMessage` (commandnet-discord-bot). Updating the post
 runs after the patrol is saved, and a Discord failure is logged, never thrown, so it can never stop
 a patrol being created. The plugin adds one migration: a `patrols_channel_id` column and the
