@@ -21,4 +21,12 @@ class PatrolMessageRepository extends AbstractRepository
     {
         return $this->findOneBy(['operationId' => $operationId, 'guildId' => $guildId]);
     }
+
+    /**
+     * @return array<PatrolMessage> every server's post for one patrol
+     */
+    public function findAllForPatrol(int $operationId): array
+    {
+        return $this->findBy(['operationId' => $operationId]);
+    }
 }

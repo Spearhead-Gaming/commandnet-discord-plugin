@@ -8,6 +8,7 @@ use MajesticDev\CommandNet\Entity\Enum\OperationStatus;
 use MajesticDev\CommandNet\Entity\Enum\RsvpStatus;
 use MajesticDev\CommandNet\Entity\Operation;
 use MajesticDev\CommandNet\Entity\OperationRSVP;
+use MajesticDev\Discord\Api\Resource\DeleteMessage;
 use MajesticDev\Discord\Api\Resource\EditMessage;
 use MajesticDev\Discord\Api\Resource\PostMessage;
 use MajesticDev\Discord\Entity\DiscordConnection;
@@ -50,6 +51,35 @@ class PatrolPostService
                     'guild' => $connection->getGuildId(),
                 ]);
             }
+        }
+    }
+
+    /**
+     * Deletes a patrol's posts from every server, and forgets them. Called once the patrol is
+     * really gone. A post that cannot be deleted (the bot is down, or lost its permission) is
+     * logged and left for a person to remove - the record is dropped either way, since there is
+     * no patrol left for it to be refreshed against.
+     */
+    public function removePosts(int $patrolId): void
+    {
+        foreach ($this->messageRepository->findAllForPatrol($patrolId) as $message) {
+            $delete = new DeleteMessage();
+            $delete->guildId = $message->getGuildId();
+            $delete->channelId = $message->getChannelId();
+            $delete->messageId = $message->getMessageId();
+
+            try {
+                $this->botService->sendData($delete);
+            } catch (DiscordBotException $ex) {
+                $this->logger->error('Could not delete the patrol post from Discord.', [
+                    'exception' => $ex,
+                    'patrol' => $patrolId,
+                    'guild' => $message->getGuildId(),
+                    'message' => $message->getMessageId(),
+                ]);
+            }
+
+            $this->messageRepository->remove($message);
         }
     }
 
